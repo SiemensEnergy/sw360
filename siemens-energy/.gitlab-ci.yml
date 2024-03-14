@@ -6,12 +6,17 @@ variables:
   HTTPS_PROXY: $CODE_PROXY
   NO_PROXY: $no_proxy
 
+stages:
+  - build-base-container
+  - build-sw360
+  - upload-bom
+  
 sw360-build-container:
+  stage: build-base-container
   image:
     name: gcr.io/kaniko-project/executor:v1.21.1-debug
     entrypoint: [""]  
   script:
-    - export VERSION=0.0.1
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - |
      /kaniko/executor \
@@ -20,8 +25,16 @@ sw360-build-container:
       --build-arg "https_proxy=${https_proxy}" \
       --build-arg "no_proxy=${no_proxy}" \
       --dockerfile "${CI_PROJECT_DIR}/siemens-energy/sw360dev.Dockerfile" \
-      --destination "${CI_REGISTRY_IMAGE}:${VERSION}" \
       --destination "${CI_REGISTRY_IMAGE}:latest" 
-  # rules:
-  #   - changes:
-  #     - siemens-energy/sw360dev.Dockerfile
+  rules:
+    - changes:
+      - siemens-energy/sw360dev.Dockerfile
+  
+
+  build-sw360:
+    stage: build-sw360
+    image: ${CI_REGISTRY_IMAGE}:latest
+    variables:
+      _JAVA_OPTIONS: '-Djdk.util.zip.disableZip64ExtraFieldValidation=true'
+    script:
+     - mvn clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
