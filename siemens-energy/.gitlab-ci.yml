@@ -31,10 +31,10 @@ sw360-build-container:
       - siemens-energy/sw360dev.Dockerfile
   
 
-  build-and-test:
-    stage: build-sw360
-    image: ${CI_REGISTRY_IMAGE}:latest
-    variables:
-      _JAVA_OPTIONS: '-Djdk.util.zip.disableZip64ExtraFieldValidation=true'
-    script:
-      - mvn clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
+build-and-test:
+  stage: build-sw360
+  image: ${CI_REGISTRY_IMAGE}:latest
+  variables:
+    _JAVA_OPTIONS: '-Djdk.util.zip.disableZip64ExtraFieldValidation=true'
+  script:
+    - mvn clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
