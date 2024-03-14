@@ -38,7 +38,6 @@ build-and-test:
     _JAVA_OPTIONS: '-Djdk.util.zip.disableZip64ExtraFieldValidation=true'
   script:
     - |
-      mvn clean install --no-transfer-progress -P deploy \
-        -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps \
-        -DRunComponentVisibilityRestrictionTest=false -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests \
-        -Dhttp.proxySet=true -Dhttp.proxyHost=$CODE_PROXY_HOST -Dhttp.proxyPort=$CODE_PROXY_PORT -Dhttp.nonProxyHosts=localhost|couchdb"
+      mvn clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy \
+        -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false \
+        -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
