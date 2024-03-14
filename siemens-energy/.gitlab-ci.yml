@@ -1,0 +1,26 @@
+variables:
+  http_proxy: $CODE_PROXY
+  https_proxy: $CODE_PROXY
+  no_proxy: "code.siemens-energy.com,127.0.0.1,localhost,.siemens-energy.com,artifactory.siemens-energy.com"
+  HTTP_PROXY: $CODE_PROXY
+  HTTPS_PROXY: $CODE_PROXY
+  NO_PROXY: $no_proxy
+
+sw360-build-container:
+  image:
+    name: gcr.io/kaniko-project/executor:v1.21.1-debug
+    entrypoint: [""]  
+  script:
+    - export VERSION=0.0.1
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - |
+     /kaniko/executor \
+      --context "${CI_PROJECT_DIR}" \
+      --build-arg "http_proxy=${http_proxy}" \
+      --build-arg "https_proxy=${https_proxy}" \
+      --build-arg "no_proxy=${no_proxy}" \
+      --dockerfile "${CI_PROJECT_DIR}/siemens-energy/sw360dev.Dockerfile" \
+      --destination "${CI_REGISTRY_IMAGE}:${VERSION}" \
+      --destination "${CI_REGISTRY_IMAGE}:latest" 
+  except: 
+    - tags
