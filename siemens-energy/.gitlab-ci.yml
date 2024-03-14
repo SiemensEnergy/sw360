@@ -1,7 +1,7 @@
 variables:
   http_proxy: $CODE_PROXY
   https_proxy: $CODE_PROXY
-  no_proxy: "code.siemens-energy.com,127.0.0.1,localhost,.siemens-energy.com,artifactory.siemens-energy.com"
+  no_proxy: "code.siemens-energy.com,127.0.0.1,localhost,.siemens-energy.com,artifactory.siemens-energy.com,docker-code.siemens-energy.com"
   HTTP_PROXY: $CODE_PROXY
   HTTPS_PROXY: $CODE_PROXY
   NO_PROXY: $no_proxy
@@ -40,4 +40,5 @@ build-and-test:
     - |
       mvn clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy \
         -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false \
-        -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
+        -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests \
+        -Dhttp.proxySet=true -Dhttp.proxyHost=$CODE_PROXY_HOST -Dhttp.proxyPort=$CODE_PROXY_PORT -Dhttp.nonProxyHosts=localhost|couchdb
