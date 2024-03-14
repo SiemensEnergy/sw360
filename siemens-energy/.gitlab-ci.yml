@@ -23,7 +23,5 @@ sw360-build-container:
       --destination "${CI_REGISTRY_IMAGE}:${VERSION}" \
       --destination "${CI_REGISTRY_IMAGE}:latest" 
   rules:
-    changes:
-      - sw360dev.Dockerfile
-  except: 
-    - tags
+    - changes:
+      - siemens-energy/sw360dev.Dockerfile
