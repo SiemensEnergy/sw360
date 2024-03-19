@@ -43,8 +43,9 @@ build-and-test:
     #_JAVA_OPTIONS: '-Djdk.util.zip.disableZip64ExtraFieldValidation=true'
     _JAVA_OPTIONS: "-Djdk.net.URLClassPath.disableClassPathURLCheck=true -Djdk.util.zip.disableZip64ExtraFieldValidation=true -DSPDXParser.OnlyUseLocalLicenses=true -Dhttp.proxySet=true -Dhttp.proxyHost=$CODE_PROXY_HOST -Dhttp.proxyPort=$CODE_PROXY_PORT -Dhttps.proxyHost=$CODE_PROXY_HOST -Dhttps.proxyPort=$CODE_PROXY_PORT -Dhttp.nonProxyHosts=localhost|couchdb"
   script:
+    - mkdir -p  /etc/sw360/
     - |
-      - mkdir -p  /etc/sw360/
+
     # Create couchdb-test.properties in /etc/sw360 to run testcases
       - echo 'couchdb.url = http://couchdb:5984' > /etc/sw360/couchdb-test.properties
       - echo "couchdb.user = ${COUCHDB_TEST_USER}" >> /etc/sw360/couchdb-test.properties
