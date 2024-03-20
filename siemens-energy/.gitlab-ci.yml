@@ -51,4 +51,4 @@ build-and-test:
       - |
        mvn ${_JAVA_OPTIONS} clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy \
         -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false \
-        -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
+        -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false
