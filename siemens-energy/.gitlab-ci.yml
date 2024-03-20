@@ -11,8 +11,8 @@ stages:
   - build-sw360
   - upload-bom
 
-#services:
-  #- couchdb:3.3.3
+services:
+  - couchdb:3.3.3
   
 sw360-build-container:
   stage: build-base-container
@@ -38,16 +38,16 @@ build-and-test:
   stage: build-sw360
   image: ${CI_REGISTRY_IMAGE}:latest
   variables:
-    #COUCHDB_USER: "$COUCHDB_TEST_USER"
-    #COUCHDB_PASSWORD: "$COUCHDB_TEST_PWD"
+    COUCHDB_USER: "$COUCHDB_TEST_USER"
+    COUCHDB_PASSWORD: "$COUCHDB_TEST_PWD"
     #_JAVA_OPTIONS: '-Djdk.util.zip.disableZip64ExtraFieldValidation=true'
     _JAVA_OPTIONS: "-Djdk.net.URLClassPath.disableClassPathURLCheck=true -Djdk.util.zip.disableZip64ExtraFieldValidation=true -DSPDXParser.OnlyUseLocalLicenses=true -Dhttp.proxySet=true -Dhttp.proxyHost=$CODE_PROXY_HOST -Dhttp.proxyPort=$CODE_PROXY_PORT -Dhttps.proxyHost=$CODE_PROXY_HOST -Dhttps.proxyPort=$CODE_PROXY_PORT -Dhttp.nonProxyHosts=localhost|couchdb"
   script:
-      #- mkdir -p  /etc/sw360/
+      - mkdir -p  /etc/sw360/
     # Create couchdb-test.properties in /etc/sw360 to run testcases
-      #- echo 'couchdb.url = http://couchdb:5984' > /etc/sw360/couchdb-test.properties
-      #- echo "couchdb.user = ${COUCHDB_TEST_USER}" >> /etc/sw360/couchdb-test.properties
-      #- echo "couchdb.password = ${COUCHDB_TEST_PWD}" >> /etc/sw360/couchdb-test.properties
+      - echo 'couchdb.url = http://couchdb:5984' > /etc/sw360/couchdb-test.properties
+      - echo "couchdb.user = ${COUCHDB_TEST_USER}" >> /etc/sw360/couchdb-test.properties
+      - echo "couchdb.password = ${COUCHDB_TEST_PWD}" >> /etc/sw360/couchdb-test.properties
 
       - |
        mvn ${_JAVA_OPTIONS} clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy \
