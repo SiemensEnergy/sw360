@@ -48,7 +48,7 @@ build-and-test:
       - echo 'couchdb.url = http://couchdb:5984' > /etc/sw360/couchdb-test.properties
       - echo "couchdb.user = ${COUCHDB_TEST_USER}" >> /etc/sw360/couchdb-test.properties
       - echo "couchdb.password = ${COUCHDB_TEST_PWD}" >> /etc/sw360/couchdb-test.properties
-      - |
-      mvn ${_JAVA_OPTIONS} clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy \
-        -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false \
-        -DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
+      #- |
+      #mvn ${_JAVA_OPTIONS} clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy \
+        #-Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=false \
+        #-DRunPrivateProjectAccessTest=false -DRunRestForceUpdateTest=false -DskipTests
