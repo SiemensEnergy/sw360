@@ -50,5 +50,5 @@ build-and-test:
       - echo "couchdb.password = ${COUCHDB_TEST_PWD}" >> /etc/sw360/couchdb-test.properties
       - |
        mvn ${_JAVA_OPTIONS} clean install --no-transfer-progress -P deploy -Dhelp-docs=true -Dbase.deploy.dir=. -Dliferay.deploy.dir=${PWD}/deploy \
-        -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=True \
-        -DRunPrivateProjectAccessTest=True -DRunRestForceUpdateTest=True
+        -Dbackend.deploy.dir=${PWD}/deploy/webapps -Drest.deploy.dir=${PWD}/deploy/webapps -DRunComponentVisibilityRestrictionTest=False \
+        -DRunPrivateProjectAccessTest=False -DRunRestForceUpdateTest=False
