@@ -244,7 +244,8 @@ public class ScheduleAdminPortlet extends Sw360Portlet {
     }
 
     private void scheduleService(String serviceName, ActionRequest request) throws PortletException {
-        try {
+    	log.info("SVMTEST serviceName ==> "+serviceName);
+    	try {
             User user = UserCacheHolder.getUserFromRequest(request);
             RequestSummary requestSummary =
                     new ThriftClients().makeScheduleClient().scheduleService(serviceName);
