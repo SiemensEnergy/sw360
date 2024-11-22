@@ -29,9 +29,10 @@ import org.eclipse.sw360.vmcomponents.db.VMDatabaseHandler;
 import org.eclipse.sw360.vmcomponents.process.VMProcessHandler;
 import org.eclipse.sw360.vulnerabilities.common.VulnerabilityMapper;
 import org.jetbrains.annotations.NotNull;
-import com.github.cliftonlabs.json_simple.JsonArray;
-import com.github.cliftonlabs.json_simple.JsonObject;
-import com.github.cliftonlabs.json_simple.Jsoner;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -222,7 +223,7 @@ public class SVMSyncHandler<T extends TBase> {
     public VMResult<String> getSMVElementIds(String url){
         try {
             String idResponse = SVMUtils.prepareJSONRequestAndGetResponse(url);
-            JsonArray ids = Jsoner.deserialize(idResponse, new JsonArray());
+            JSONArray ids = (JSONArray) JSONValue.parse(idResponse);
 
             if (ids == null || ids.isEmpty()){
                 return null;
@@ -250,7 +251,8 @@ public class SVMSyncHandler<T extends TBase> {
                 url += "/" + SVMUtils.getVmid(element);
                 String response = SVMUtils.prepareJSONRequestAndGetResponse(url);
 
-                JsonObject jsonObject = Jsoner.deserialize(response, new JsonObject());
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObject = (JSONObject) parser.parse(response);
 
                 if (VMComponent.class.isAssignableFrom(element.getClass()))
                     element = (T) SVMMapper.updateComponentByJSON((VMComponent) element, jsonObject);
@@ -633,7 +635,7 @@ public class SVMSyncHandler<T extends TBase> {
             try {
                 url = url.replace(SVMConstants.COMPONENTS_ID_WILDCARD, componentVmId);
                 String response = SVMUtils.prepareJSONRequestAndGetResponse(url);
-                JsonArray ids = Jsoner.deserialize(response, new JsonArray());
+                JSONArray ids = (JSONArray) JSONValue.parse(response);
 
                 if (ids == null || ids.isEmpty()){
                     return Collections.emptySet();
@@ -641,7 +643,7 @@ public class SVMSyncHandler<T extends TBase> {
 
                 Set<String> vulIds = new HashSet<>();
                 for (Object id : ids) {
-                    JsonObject json = (JsonObject) id;
+                    JSONObject json = (JSONObject) id;
                     String vulId = json.get(SVMConstants.VULNERABILITY_ID).toString();
                     if (!StringUtils.isEmpty(vulId)){
                         vulIds.add(vulId);
