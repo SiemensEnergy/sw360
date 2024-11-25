@@ -246,11 +246,15 @@ public class SVMSyncHandler<T extends TBase> {
     }
 
     private VMResult<T> getSMVElementMasterDataById(T element, String url){
+    	log.info("SVMTEST getSMVElementMasterDataById ==> "+url);
         if (element != null){
             try {
                 url += "/" + SVMUtils.getVmid(element);
+                log.info("SVMTEST inside if ==> "+url);
+                log.info("SVMTEST element.getClass() ==> "+element.getClass());
                 String response = SVMUtils.prepareJSONRequestAndGetResponse(url);
 
+                log.info("SVMTEST response ==> "+response);
                 JSONParser parser = new JSONParser();
                 JSONObject jsonObject = (JSONObject) parser.parse(response);
 
