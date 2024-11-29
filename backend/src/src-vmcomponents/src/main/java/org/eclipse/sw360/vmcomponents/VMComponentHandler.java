@@ -69,21 +69,18 @@ public class VMComponentHandler implements VMComponentService.Iface {
         // synchronize VMAction
         String actionStart = SW360Utils.getCreatedOnTime();
         dbHandler.add(new VMProcessReporting(VMAction.class.getSimpleName(), actionStart));
-        log.info("SVMTEST SVMConstants.ACTIONS_URL==> "+SVMConstants.ACTIONS_URL);
         VMProcessHandler.getElementIds(VMAction.class, SVMConstants.ACTIONS_URL, true);
         log.info("Storing and getting master data of "+VMAction.class.getSimpleName()+" triggered. waiting for completion...");
 
         // synchronize VMPriority
         String prioStart = SW360Utils.getCreatedOnTime();
         dbHandler.add(new VMProcessReporting(VMPriority.class.getSimpleName(), prioStart));
-        log.info("SVMTEST SVMConstants.PRIORITIES_URL==> "+SVMConstants.PRIORITIES_URL);
         VMProcessHandler.getElementIds(VMPriority.class, SVMConstants.PRIORITIES_URL, true);
         log.info("Storing and getting master data of "+VMPriority.class.getSimpleName()+" triggered. waiting for completion...");
 
         // synchronize VMComponent
         String compStart = SW360Utils.getCreatedOnTime();
         dbHandler.add(new VMProcessReporting(VMComponent.class.getSimpleName(), compStart));
-        log.info("SVMTEST SVMConstants.COMPONENTS_URL==> "+SVMConstants.COMPONENTS_URL);
         VMProcessHandler.getElementIds(VMComponent.class, SVMConstants.COMPONENTS_URL, true);
         log.info("Storing and getting master data of "+VMComponent.class.getSimpleName()+" triggered. waiting for completion...");
 

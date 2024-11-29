@@ -124,7 +124,6 @@ public class SvmConnector {
 
 
     public Map<String, Map<String, Object>> fetchComponentMappings() throws SW360Exception, IOException {
-    	log.info("SVMTEST fetchComponentMapping url ==> " + COMPONENT_MAPPINGS_API_URL);
         if(CommonUtils.isNullEmptyOrWhitespace(COMPONENT_MAPPINGS_API_URL)) {
             return Collections.emptyMap();
         }

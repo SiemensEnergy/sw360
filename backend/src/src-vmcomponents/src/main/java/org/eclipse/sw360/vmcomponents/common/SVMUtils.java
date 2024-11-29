@@ -33,7 +33,6 @@ public class SVMUtils {
     public static String prepareJSONRequestAndGetResponse(String url) throws IOException {
         StringBuffer json = new StringBuffer();
         URL url_ = new URL(url);
-        log.info("SVMTEST Call URL: "+url);
         log.debug("Call URL: "+url);
         HttpURLConnection conn = (HttpURLConnection) url_.openConnection();
         conn.setRequestMethod("GET");
@@ -55,7 +54,6 @@ public class SVMUtils {
         conn.disconnect();
         String response = json.toString();
         log.debug("Response from Server .... \n"+response);
-        log.info("SVMTEST Response from Server .... \n"+response);
         return response;
     }
 
