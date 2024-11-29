@@ -1619,7 +1619,7 @@ public class ProjectPortlet extends FossologyAwarePortlet {
         ProjectService.Iface projectClient = thriftClients.makeProjectClient();
         ModerationService.Iface modClient = thriftClients.makeModerationClient();
         try {
-            Set<String> organizations = projectClient.getGroups();
+        	Set<String> organizations = new TreeSet<>(projectClient.getGroups());
             request.setAttribute(PortalConstants.ORGANIZATIONS, organizations);
             String dateLimit = CommonUtils.nullToEmptyString(ModerationPortletUtils.loadPreferredClearingDateLimit(request, UserCacheHolder.getUserFromRequest(request)));
             request.setAttribute(CUSTOM_FIELD_PREFERRED_CLEARING_DATE_LIMIT, dateLimit);
