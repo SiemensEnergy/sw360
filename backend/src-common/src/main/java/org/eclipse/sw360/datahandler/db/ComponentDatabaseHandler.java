@@ -523,10 +523,17 @@ public class ComponentDatabaseHandler extends AttachmentAwareDatabaseHandler {
             final AddDocumentRequestSummary addDocumentRequestSummary = new AddDocumentRequestSummary()
                     .setRequestStatus(AddDocumentRequestStatus.DUPLICATE);
             List<Release> duplicates = releaseRepository.searchByNameAndVersion(release.getName(), release.getVersion(), true);
+            Release existingRelease=new Release();
             if (duplicates.size() == 1) {
                 duplicates.stream()
                         .map(Release::getId)
                         .forEach(addDocumentRequestSummary::setId);
+                 existingRelease = duplicates.get(0);
+                 if((Objects.isNull(existingRelease.getSourceCodeDownloadurl()) || existingRelease.getSourceCodeDownloadurl().equalsIgnoreCase("")) && 
+                		 !Objects.isNull(release.getSourceCodeDownloadurl())) {
+                	 existingRelease.setSourceCodeDownloadurl(release.getSourceCodeDownloadurl());
+                 	 releaseRepository.update(existingRelease);
+                 }
             }
             return addDocumentRequestSummary;
         }
@@ -3089,6 +3096,56 @@ public class ComponentDatabaseHandler extends AttachmentAwareDatabaseHandler {
                             for (String format : formats) {
                                 String downloadURL = String.format(format, c.getVcs(), version);
                                 if (isValidURL(downloadURL)) {
+                                    try {
+                                        String destinationDirectory = SW360Constants.SRC_ATTACHMENT_DOWNLOAD_LOCATION;
+                                        File file = downloadFile(downloadURL, destinationDirectory);
+                                        Attachment attachment = new Attachment()
+                                                .setAttachmentType(AttachmentType.SOURCE);
+                                        Set<Attachment> src_attachment = new HashSet<>();
+                                        src_attachment.add(uploadAttachment(file, attachment));
+                                        r.setAttachments(src_attachment);
+                                        r.setSourceCodeDownloadurl(downloadURL);
+                                        releaseRepository.update(r);
+                                        isUploaded = true;
+                                        updateReleases.add(r.getId());
+                                        // Delete the SRC zip file after the release is updated
+                                        file.delete();
+                                        break;
+                                    } catch (IOException | TException e) {
+                                        log.error(
+                                                "SRC Upload: Error while downloading the source code zip file for release:"
+                                                        + r.getId() + " " + e);
+                                    }
+                                }
+                            }
+                            if (isUploaded) {
+                                dbHandlerUtil.addChangeLogs(r, originalReleaseData,
+                                        SW360Constants.SRC_ATTACHMENT_UPLOADER_EMAIL, Operation.UPDATE,
+                                        attachmentConnector, Lists.newArrayList(), null, null);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            else {
+            	for (String r_id : c.getReleaseIds()) {
+                    boolean isUploaded = false;
+                    Release r = getRelease(r_id);
+
+                    if (r.getClearingState() == ClearingState.NEW_CLEARING) {
+                        List<Attachment> sourceAttachments = (r.getAttachments() != null) ? r.getAttachments().stream()
+                                .filter(attachment -> AttachmentType.SOURCE.equals(attachment.getAttachmentType()))
+                                .collect(Collectors.toList()) : Collections.emptyList();
+
+                        if (sourceAttachments.size() == 0) {
+                            releasesWithoutSRC.add(r.getId());
+                            String version = r.getVersion();
+                            Release originalReleaseData = r.deepCopy();
+
+                            String downloadURL = r.getSourceCodeDownloadurl();
+                            if(Objects.nonNull(downloadURL)) {
+                            	if (isValidURL(downloadURL)) {
                                     try {
                                         String destinationDirectory = SW360Constants.SRC_ATTACHMENT_DOWNLOAD_LOCATION;
                                         File file = downloadFile(downloadURL, destinationDirectory);

@@ -117,6 +117,7 @@ public class CycloneDxBOMImporter {
     private static final String PROJECT_NAME = "projectName";
     private static final boolean IS_PACKAGE_PORTLET_ENABLED = SW360Constants.IS_PACKAGE_PORTLET_ENABLED;
     private static final Predicate<ExternalReference.Type> typeFilter = type -> ExternalReference.Type.VCS.equals(type);
+    private static final Predicate<ExternalReference.Type> typeFilterDistribution = type -> ExternalReference.Type.DISTRIBUTION.equals(type);
 
     private final ProjectDatabaseHandler projectDatabaseHandler;
     private final ComponentDatabaseHandler componentDatabaseHandler;
@@ -583,9 +584,15 @@ public class CycloneDxBOMImporter {
                 }
 
                 for (org.cyclonedx.model.Component bomComp : entry.getValue()) {
-
+                	String distributionUrl = null;
                     Set<String> licenses = getLicenseFromBomComponent(bomComp);
+                    for (ExternalReference extRef : CommonUtils.nullToEmptyList(bomComp.getExternalReferences())) {
+                        if (Type.DISTRIBUTION.equals(extRef.getType())) {
+                            distributionUrl = CommonUtils.nullToEmptyString(extRef.getUrl());
+                        }
+                    }
                     release = createRelease(bomComp.getVersion(), comp, licenses);
+                    release.setSourceCodeDownloadurl(CommonUtils.nullToEmptyString(distributionUrl));
                     if (CommonUtils.isNullEmptyOrWhitespace(release.getVersion()) ) {
                         log.error("release version is not present in SBoM for component: " + comp.getName());
                         invalidReleases.add(comp.getName());
